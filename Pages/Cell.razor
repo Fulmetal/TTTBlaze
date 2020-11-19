@@ -1,0 +1,19 @@
+﻿
+<td>
+    @if (val == 'X' || val == 'Y')
+    {
+        <button @onclick="Handler" disabled class="cell">@val</button>
+    }
+    else
+    {
+        <button @onclick="Handler" class="cell">@val</button>
+    }
+    @*<button @onclick="Handler" class="cell">@val</button>*@
+</td>
+
+    @code {
+        [Parameter]
+        public char val { get; set; }
+        [Parameter]
+        public EventCallback Handler { get; set; }
+    }

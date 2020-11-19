@@ -1,0 +1,105 @@
+﻿@page "/tictactoe"
+
+@using TTTBlaze.Pages
+
+<h3>Tic Tac Toe</h3>
+
+Current player @CurrentPlayer
+
+<table class="center" style="height:600px; width:600px">
+    <tr>
+        @for (int i = 1; i < 4; i++)
+        {
+            int c = i;
+            <Cell @key="c" val="boardState[c -1]" Handler="@(() => CellClicked(c))"></Cell>
+        }
+
+    </tr>
+    <tr>
+        @for (int i = 4; i < 7; i++)
+        {
+            int c = i;
+            <Cell @key="c" val="boardState[c -1]" Handler="@(() => CellClicked(c))"></Cell>
+        }
+
+    </tr>
+    <tr>
+        @for (int i = 7; i < 10; i++)
+        {
+            int c = i;
+            <Cell @key="c" val="boardState[c -1]" Handler="@(() => CellClicked(c))"></Cell>
+        }
+    </tr>
+</table>
+
+@winMessage 
+
+@if (!string.IsNullOrEmpty(winMessage))
+{ 
+    <div class="row text-center">
+        <button @onclick="Init" >Play Again?</button>
+    </div>
+}
+
+@code {
+    private char CurrentPlayer;
+    private List<int> Player1Selection;
+    private List<int> Player2Selection;
+    private char[] boardState;
+    private int counter;
+    private string winMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Init();
+    }
+
+    protected void Init()
+    {
+        CurrentPlayer = 'X';
+        Player1Selection = new List<int>();
+        Player2Selection = new List<int>();
+        boardState = new char[9];
+        winMessage = string.Empty;
+    }
+
+    protected async void CellClicked(int cellNumber)
+    {
+        counter++;
+
+        if (CurrentPlayer == 'X')
+        {
+            Player1Selection.Add(cellNumber);
+
+            boardState[cellNumber -1] = CurrentPlayer;
+
+            CurrentPlayer = 'Y';
+        }
+        else
+        {
+            Player2Selection.Add(cellNumber);
+
+            boardState[cellNumber - 1] = CurrentPlayer;
+
+            CurrentPlayer = 'X';
+        }
+        bool p1win = WinCalculator.DidPlayerWin(Player1Selection);
+        bool p2win = WinCalculator.DidPlayerWin(Player2Selection);
+
+        if (p1win == true)
+        {
+            CurrentPlayer = ' ';
+            winMessage = "PLAYER X WINS!";
+        }
+        if (p2win == true)
+        {
+            CurrentPlayer = ' ';
+            winMessage = "PLAYER Y WINS!";
+        }
+        if (p1win == false && p2win == false && counter == 9)
+        {
+            winMessage = "DRAW!";
+        }
+
+    }
+}
